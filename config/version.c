@@ -35,7 +35,7 @@
 
 #include <libkern/version.h>
 
-const char version[] = OSTYPE " Kernel Version ###KERNEL_VERSION_LONG###: ###KERNEL_BUILD_DATE###; ###KERNEL_BUILDER###:###KERNEL_BUILD_OBJROOT###";
+const char version[] = OSTYPE " Kernel Version ###KERNEL_VERSION_LONG###: ###KERNEL_BUILD_DATE###; ~ Shaneee ~ :###KERNEL_BUILD_OBJROOT###";
 const int  version_major = VERSION_MAJOR;
 const int  version_minor = VERSION_MINOR;
 const int  version_revision = VERSION_REVISION;

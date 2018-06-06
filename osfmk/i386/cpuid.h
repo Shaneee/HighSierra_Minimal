@@ -123,34 +123,34 @@
  * Leaf 7, subleaf 0 additional features.
  * Bits returned in %ebx:%ecx to a CPUID request with {%eax,%ecx} of (0x7,0x0}:
  */
-#define CPUID_LEAF7_FEATURE_RDWRFSGS _Bit(0)	/* FS/GS base read/write */
-#define CPUID_LEAF7_FEATURE_TSCOFF   _Bit(1)	/* TSC thread offset */
-#define CPUID_LEAF7_FEATURE_BMI1     _Bit(3)	/* Bit Manipulation Instrs, set 1 */
-#define CPUID_LEAF7_FEATURE_HLE      _Bit(4)	/* Hardware Lock Elision*/
-#define CPUID_LEAF7_FEATURE_AVX2     _Bit(5)	/* AVX2 Instructions */
-#define CPUID_LEAF7_FEATURE_SMEP     _Bit(7)	/* Supervisor Mode Execute Protect */
-#define CPUID_LEAF7_FEATURE_BMI2     _Bit(8)	/* Bit Manipulation Instrs, set 2 */
-#define CPUID_LEAF7_FEATURE_ERMS     _Bit(9)	/* Enhanced Rep Movsb/Stosb */
-#define CPUID_LEAF7_FEATURE_INVPCID  _Bit(10)	/* INVPCID intruction, TDB */
-#define CPUID_LEAF7_FEATURE_RTM      _Bit(11)	/* RTM */
-#define CPUID_LEAF7_FEATURE_RDSEED   _Bit(18)	/* RDSEED Instruction */
-#define CPUID_LEAF7_FEATURE_ADX      _Bit(19)	/* ADX Instructions */
-#define CPUID_LEAF7_FEATURE_SMAP     _Bit(20)	/* Supervisor Mode Access Protect */
-#define CPUID_LEAF7_FEATURE_SGX      _Bit(2)	/* Software Guard eXtensions */
-#define CPUID_LEAF7_FEATURE_PQM      _Bit(12)	/* Platform Qos Monitoring */
-#define CPUID_LEAF7_FEATURE_FPU_CSDS _Bit(13)	/* FPU CS/DS deprecation */
-#define CPUID_LEAF7_FEATURE_MPX      _Bit(14)	/* Memory Protection eXtensions */
-#define CPUID_LEAF7_FEATURE_PQE      _Bit(15)	/* Platform Qos Enforcement */
-#define CPUID_LEAF7_FEATURE_CLFSOPT  _Bit(23)	/* CLFSOPT */
-#define CPUID_LEAF7_FEATURE_IPT      _Bit(25)	/* Intel Processor Trace */
-#define CPUID_LEAF7_FEATURE_SHA      _Bit(29)	/* SHA instructions */
+#define CPUID_LEAF7_FEATURE_RDWRFSGS _Bit(0)    /* FS/GS base read/write */
+#define CPUID_LEAF7_FEATURE_TSCOFF   _Bit(1)    /* TSC thread offset */
+#define CPUID_LEAF7_FEATURE_BMI1     _Bit(3)    /* Bit Manipulation Instrs, set 1 */
+#define CPUID_LEAF7_FEATURE_HLE      _Bit(4)    /* Hardware Lock Elision*/
+#define CPUID_LEAF7_FEATURE_AVX2     _Bit(5)    /* AVX2 Instructions */
+#define CPUID_LEAF7_FEATURE_SMEP     _Bit(7)    /* Supervisor Mode Execute Protect */
+#define CPUID_LEAF7_FEATURE_BMI2     _Bit(8)    /* Bit Manipulation Instrs, set 2 */
+#define CPUID_LEAF7_FEATURE_ERMS     _Bit(9)    /* Enhanced Rep Movsb/Stosb */
+#define CPUID_LEAF7_FEATURE_INVPCID  _Bit(10)    /* INVPCID intruction, TDB */
+#define CPUID_LEAF7_FEATURE_RTM      _Bit(11)    /* RTM */
+#define CPUID_LEAF7_FEATURE_RDSEED   _Bit(18)    /* RDSEED Instruction */
+#define CPUID_LEAF7_FEATURE_ADX      _Bit(19)    /* ADX Instructions */
+#define CPUID_LEAF7_FEATURE_SMAP     _Bit(20)    /* Supervisor Mode Access Protect */
+#define CPUID_LEAF7_FEATURE_SGX      _Bit(2)    /* Software Guard eXtensions */
+#define CPUID_LEAF7_FEATURE_PQM      _Bit(12)    /* Platform Qos Monitoring */
+#define CPUID_LEAF7_FEATURE_FPU_CSDS _Bit(13)    /* FPU CS/DS deprecation */
+#define CPUID_LEAF7_FEATURE_MPX      _Bit(14)    /* Memory Protection eXtensions */
+#define CPUID_LEAF7_FEATURE_PQE      _Bit(15)    /* Platform Qos Enforcement */
+#define CPUID_LEAF7_FEATURE_CLFSOPT  _Bit(23)    /* CLFSOPT */
+#define CPUID_LEAF7_FEATURE_IPT      _Bit(25)    /* Intel Processor Trace */
+#define CPUID_LEAF7_FEATURE_SHA      _Bit(29)    /* SHA instructions */
 #if !defined(RC_HIDE_XNU_J137)
-#define CPUID_LEAF7_FEATURE_AVX512F  _Bit(16)	/* AVX512F instructions */
-#define CPUID_LEAF7_FEATURE_AVX512DQ _Bit(17)	/* AVX512DQ instructions */
-#define CPUID_LEAF7_FEATURE_AVX512IFMA _Bit(21)	/* AVX512IFMA instructions */
-#define CPUID_LEAF7_FEATURE_AVX512CD _Bit(28)	/* AVX512CD instructions */
-#define CPUID_LEAF7_FEATURE_AVX512BW _Bit(30)	/* AVX512BW instructions */
-#define CPUID_LEAF7_FEATURE_AVX512VL _Bit(31)	/* AVX512VL instructions */
+#define CPUID_LEAF7_FEATURE_AVX512F  _Bit(16)    /* AVX512F instructions */
+#define CPUID_LEAF7_FEATURE_AVX512DQ _Bit(17)    /* AVX512DQ instructions */
+#define CPUID_LEAF7_FEATURE_AVX512IFMA _Bit(21)    /* AVX512IFMA instructions */
+#define CPUID_LEAF7_FEATURE_AVX512CD _Bit(28)    /* AVX512CD instructions */
+#define CPUID_LEAF7_FEATURE_AVX512BW _Bit(30)    /* AVX512BW instructions */
+#define CPUID_LEAF7_FEATURE_AVX512VL _Bit(31)    /* AVX512VL instructions */
 #endif /* not RC_HIDE_XNU_J137 */
 
 #define CPUID_LEAF7_FEATURE_PREFETCHWT1 _HBit(0)/* Prefetch Write/T1 hint */
@@ -185,25 +185,27 @@
  * is eligible to run the "x86_64h" "Haswell feature subset" slice.
  */
 #define CPUID_X86_64_H_FEATURE_SUBSET ( CPUID_FEATURE_FMA    | \
-                                        CPUID_FEATURE_SSE4_2 | \
-                                        CPUID_FEATURE_MOVBE  | \
-                                        CPUID_FEATURE_POPCNT | \
-                                        CPUID_FEATURE_AVX1_0   \
-                                      )
+CPUID_FEATURE_SSE4_2 | \
+CPUID_FEATURE_MOVBE  | \
+CPUID_FEATURE_POPCNT | \
+CPUID_FEATURE_AVX1_0   \
+)
 
 #define CPUID_X86_64_H_EXTFEATURE_SUBSET ( CPUID_EXTFEATURE_LZCNT \
-                                         )
+)
 
 #define CPUID_X86_64_H_LEAF7_FEATURE_SUBSET ( CPUID_LEAF7_FEATURE_BMI1 | \
-                                              CPUID_LEAF7_FEATURE_AVX2 | \
-                                              CPUID_LEAF7_FEATURE_BMI2   \
-                                            )
+CPUID_LEAF7_FEATURE_AVX2 | \
+CPUID_LEAF7_FEATURE_BMI2   \
+)
 
 #define	CPUID_CACHE_SIZE	16	/* Number of descriptor values */
 
 #define CPUID_MWAIT_EXTENSION	_Bit(0)	/* enumeration of WMAIT extensions */
 #define CPUID_MWAIT_BREAK	_Bit(1)	/* interrupts are break events	   */
 
+#define CPUID_MODEL_YONAH		0x0E
+#define CPUID_MODEL_MEROM		0x0F
 #define CPUID_MODEL_PENRYN		0x17
 #define CPUID_MODEL_NEHALEM		0x1A
 #define CPUID_MODEL_FIELDS		0x1E	/* Lynnfield, Clarksfield */
@@ -228,13 +230,6 @@
 #define CPUID_MODEL_SKYLAKE_ULT		0x4E
 #define CPUID_MODEL_SKYLAKE_ULX		0x4E
 #define CPUID_MODEL_SKYLAKE_DT		0x5E
-#if !defined(RC_HIDE_XNU_J137)
-#define CPUID_MODEL_SKYLAKE_W		0x55
-#endif /* not RC_HIDE_XNU_J137 */
-#define CPUID_MODEL_KABYLAKE            0x8E
-#define CPUID_MODEL_KABYLAKE_ULT        0x8E
-#define CPUID_MODEL_KABYLAKE_ULX        0x8E
-#define CPUID_MODEL_KABYLAKE_DT         0x9E
 
 #define CPUID_VMM_FAMILY_UNKNOWN	0x0
 #define CPUID_VMM_FAMILY_VMWARE		0x1
@@ -420,7 +415,7 @@ typedef struct {
 	cpuid_xsave_leaf_t	*cpuid_xsave_leafp;
 	uint64_t		cpuid_leaf7_features;
 	cpuid_tsc_leaf_t	cpuid_tsc_leaf;
-	cpuid_xsave_leaf_t	cpuid_xsave_leaf[2];
+	cpuid_xsave_leaf_t	cpuid_xsave_leaf;
 } i386_cpu_info_t;
 
 #ifdef MACH_KERNEL_PRIVATE
@@ -463,11 +458,26 @@ extern i386_vmm_info_t	*cpuid_vmm_info(void);
 extern uint32_t		cpuid_vmm_family(void);
 #endif
 
+extern void     FixAMDTLB(void);
+extern boolean_t	IsAmdCPU(void);
+extern boolean_t	IsIntelCPU(void);
+extern uint32_t extractBitField(uint32_t inField, uint32_t width, uint32_t offset);
+extern uint32_t getBitFieldWidth(uint32_t number);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* ASSEMBLER */
+
+#define CPU_FAMILY_PENTIUM_M	(0x6)
+#define CPU_FAMILY_PENTIUM_4	(0xF)
+#define CPU_FAMILY_PENTIUM_4_M2 (0xF)
+#define CPU_FAMILY_AMD_PHENOM	(0x10)
+#define CPU_FAMILY_AMD_SHANGHAI	(0x11)
+#define CPU_FAMILY_I5		(0x1E)
+#define CPU_FAMILY_I9		(0x2C)
+#define CPU_FAMILY_SANDY	(0x2A)
 
 #endif /* __APPLE_API_PRIVATE */
 #endif /* _MACHINE_CPUID_H_ */

@@ -292,86 +292,136 @@ IOCatalogue::findDrivers(
 *********************************************************************/
 
 bool IOCatalogue::addDrivers(
-    OSArray * drivers,
-    bool doNubMatching)
+                             OSArray * drivers,
+                             bool doNubMatching)
 {
     bool                   result = false;
     OSCollectionIterator * iter = NULL;       // must release
     OSOrderedSet         * set = NULL;        // must release
     OSObject             * object = NULL;       // do not release
     OSArray              * persons = NULL;    // do not release
-    
+    OSString             * moduleName;
+    bool                   ret;
     persons = OSDynamicCast(OSArray, drivers);
     if (!persons) {
         goto finish;
     }
     
     set = OSOrderedSet::withCapacity( 10, IOServiceOrdering,
-        (void *)gIOProbeScoreKey );
+                                     (void *)gIOProbeScoreKey );
     if (!set) {
         goto finish;
     }
-
+    
     iter = OSCollectionIterator::withCollection(persons);
     if (!iter) {
         goto finish;
     }
-
-   /* Start with success; clear it on an error.
-    */
+    
+    /* Start with success; clear it on an error.
+     */
     result = true;
-
+    
     IORWLockWrite(lock);
     while ( (object = iter->getNextObject()) ) {
-    
+        
         // xxx Deleted OSBundleModuleDemand check; will handle in other ways for SL
-
+        
         OSDictionary * personality = OSDynamicCast(OSDictionary, object);
-
-        SInt count;
-
-        if (!personality) {
-            IOLog("IOCatalogue::addDrivers() encountered non-dictionary; bailing.\n");
-            result = false;
-            break;
+        
+        if (blacklistEnabled) {
+            OSString *modName = OSDynamicCast(OSString, personality->getObject(gIOModuleIdentifierKey));
+            const char *modNameStr = NULL;
+            if (modName)
+                modNameStr = modName->getCStringNoCopy();
+            if (modNameStr) {
+                boolean_t shouldMatch = TRUE;
+                for (uint32_t n = 0; blacklistMods[n].name; n++) {
+                    if (strcmp(blacklistMods[n].name, modNameStr))
+                        continue;
+                    if (!blacklistMods[n].hits++)
+                        printf("Warning: The Following Kext has been Blacklisted - %s\n",
+                               modNameStr);
+                    shouldMatch = FALSE;
+                }
+                if (!shouldMatch)
+                    continue;
+            }
         }
-
-        OSKext::uniquePersonalityProperties(personality);
-
-        // Add driver personality to catalogue.
-
-	OSArray * array = arrayForPersonality(personality);
-	if (!array) addPersonality(personality);
-	else
-	{       
-	    count = array->getCount();
-	    while (count--) {
-		OSDictionary * driver;
-		
-		// Be sure not to double up on personalities.
-		driver = (OSDictionary *)array->getObject(count);
-		
-	       /* Unlike in other functions, this comparison must be exact!
-		* The catalogue must be able to contain personalities that
-		* are proper supersets of others.
-		* Do not compare just the properties present in one driver
-		* personality or the other.
-		*/
-		if (personality->isEqualTo(driver)) {
-		    break;
-		}
-	    }
-	    if (count >= 0) {
-		// its a dup
-		continue;
-	    }
-	    result = array->setObject(personality);
-	    if (!result) {
-		break;
-	    }
+        if (confblacklistEnabled) {
+            OSString *modName = OSDynamicCast(OSString, personality->getObject(gIOModuleIdentifierKey));
+            const char *modNameStr = NULL;
+            if (modName)
+                modNameStr = modName->getCStringNoCopy();
+            if (modNameStr) {
+                boolean_t shouldMatch = TRUE;
+                for (uint32_t n = 0; n < confblacklistCount; n++) {
+                    if (strcmp(confblacklistMods[n].name, modNameStr))
+                        continue;
+                    if (!confblacklistMods[n].hits++)
+                        printf("Warning: The Following Kext has been Blacklisted - %s\n", modNameStr);
+                    shouldMatch = FALSE;
+                }
+                if (!shouldMatch)
+                    continue;
+            }
         }
-
-	set->setObject(personality);        
+        if ((moduleName = OSDynamicCast(OSString, personality->getObject("OSBundleModuleDemand"))))
+        {
+            IORWLockUnlock(lock);
+            ret = OSKext::loadKextWithIdentifier(moduleName->getCStringNoCopy(), false);
+            IORWLockWrite(lock);
+            ret = true;
+        }
+        else
+        /*** in else Start ***/
+        {
+            SInt count;
+            
+            if (!personality) {
+                IOLog("IOCatalogue::addDrivers() encountered non-dictionary; bailing.\n");
+                result = false;
+                break;
+            }
+            
+            OSKext::uniquePersonalityProperties(personality);
+            
+            // Add driver personality to catalogue.
+            
+            OSArray * array = arrayForPersonality(personality);
+            if (!array) addPersonality(personality);
+            else
+            {
+                count = array->getCount();
+                while (count--) {
+                    OSDictionary * driver;
+                    
+                    // Be sure not to double up on personalities.
+                    driver = (OSDictionary *)array->getObject(count);
+                    
+                    /* Unlike in other functions, this comparison must be exact!
+                     * The catalogue must be able to contain personalities that
+                     * are proper supersets of others.
+                     * Do not compare just the properties present in one driver
+                     * personality or the other.
+                     */
+                    if (personality->isEqualTo(driver)) {
+                        break;
+                    }
+                }
+                if (count >= 0) {
+                    // its a dup
+                    continue;
+                }
+                result = array->setObject(personality);
+                if (!result) {
+                    break;
+                }
+            }
+            
+            set->setObject(personality);
+        }
+        /*** in else END ***/
     }
     // Start device matching.
     if (result && doNubMatching && (set->getCount() > 0)) {
@@ -379,11 +429,11 @@ bool IOCatalogue::addDrivers(
         generation++;
     }
     IORWLockUnlock(lock);
-
+    
 finish:
     if (set)  set->release();
     if (iter) iter->release();
-
+    
     return result;
 }
 

@@ -104,7 +104,6 @@ endif
 WARNFLAGS_STD := \
 	-Weverything \
 	-Wextra \
-	$(WERROR) \
 	-Wpointer-arith \
 	-Wreturn-type \
 	-Wcast-qual \
@@ -114,7 +113,6 @@ WARNFLAGS_STD := \
 	-Wchar-subscripts \
 	-Wredundant-decls \
 	-Wextra-tokens \
-	-Wunreachable-code \
 	-Wno-assign-enum \
 	-Wno-bad-function-cast \
 	-Wno-c++98-compat \
