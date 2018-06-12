@@ -362,30 +362,30 @@ tsc_init(void)
 			tscGranularity = cpuMult / 10;
 			break;
 		}
-        case 23: /*** Shaneee: For AMD Family 17h Ryzen ***/
-        {
-            uint64_t cofvid = 0;
-            uint64_t cpuFreq = 0;
-            uint64_t cpuMult;
-            uint64_t divisor;
-            uint64_t did;
-            uint64_t fid;
+		case 23: /*** Shaneee: AMD Family 17h Ryzen ***/
+		{
+			uint64_t cofvid = 0;
+			uint64_t cpuFreq = 0;
+			uint64_t cpuMult;
+			uint64_t divisor;
+			uint64_t did;
+			uint64_t fid;
             
-            cofvid  = rdmsr64(AMD_PSTATE0_STS);
-            did = bitfield(cofvid, 13, 8);
-            fid = bitfield(cofvid, 7, 0);
-            if (did == 0) divisor = 1;
-            else if (did == 1) divisor = 4;
-            else if (did == 2) divisor = 8;
-            else if (did == 3) divisor = 16;
-            else if (did == 4) divisor = 32;
+			cofvid  = rdmsr64(AMD_PSTATE0_STS);
+			did = bitfield(cofvid, 13, 8);
+			fid = bitfield(cofvid, 7, 0);
+			if (did == 0) divisor = 1;
+			else if (did == 1) divisor = 4;
+			else if (did == 2) divisor = 8;
+			else if (did == 3) divisor = 16;
+			else if (did == 4) divisor = 32;
             
-            cpuMult = ((fid + 10) * 2) / divisor;
-            cpuFreq = EFI_CPU_Frequency();
-            busFreq = (cpuFreq * 10) / cpuMult;
-            tscGranularity = cpuMult / 10;
-            break;
-        }
+			cpuMult = ((fid + 10) * 2) / divisor;
+			cpuFreq = EFI_CPU_Frequency();
+			busFreq = (cpuFreq * 10) / cpuMult;
+			tscGranularity = cpuMult / 10;
+			break;
+		}
 	}
 
 	if (busFreq != 0) {

@@ -1418,17 +1418,17 @@ private:
     static void actionStop( IOService * client, IOService * provider,
                             void *, void *, void *);
 
-public:
     APPLE_KEXT_COMPATIBILITY_VIRTUAL
-    IOReturn resolveInterrupt(IOService *nub, int source);
+        IOReturn resolveInterrupt(IOService *nub, int source);
     APPLE_KEXT_COMPATIBILITY_VIRTUAL
-    IOReturn lookupInterrupt(int source, bool resolve, IOInterruptController **interruptController);
-    
+        IOReturn lookupInterrupt(int source, bool resolve, IOInterruptController **interruptController);
+
 #ifdef XNU_KERNEL_PRIVATE
     /* end xnu internals */
 #endif
 
     /* power management */
+public:
 
 /*! @function PMinit
     @abstract Initializes power management for a driver.
