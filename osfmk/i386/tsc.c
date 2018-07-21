@@ -201,6 +201,7 @@ tsc_init(void)
 			return;
 		}
 	}
+    /*** BusFreq Fix by Algrey + Shaneee ***/
 	switch (cpuid_info()->cpuid_family)
 	{
 		case 15: /*** AMD Family 0fh ***/
@@ -339,54 +340,68 @@ tsc_init(void)
 			break;
 		}
 		case 22: /*** AMD Family 16h ***/
-		{
-			uint64_t cofvid = 0;
-			uint64_t cpuFreq = 0;
-			uint64_t cpuMult;
-			uint64_t divisor;
-			uint64_t did;
-			uint64_t fid;
-
-			cofvid  = rdmsr64(AMD_COFVID_STATUS);
-			did = bitfield(cofvid, 8, 6);
-			fid = bitfield(cofvid, 5, 0);
-			if (did == 0) divisor = 1;
-			else if (did == 1) divisor = 2;
-			else if (did == 2) divisor = 4;
-			else if (did == 3) divisor = 8;
-			else if (did == 4) divisor = 16;
-
-			cpuMult = ((fid + 16) * 10) / divisor;
-			cpuFreq = EFI_CPU_Frequency();
-			busFreq = (cpuFreq * 10) / cpuMult;
-			tscGranularity = cpuMult / 10;
-			break;
-		}
-		case 23: /*** Shaneee: AMD Family 17h Ryzen ***/
-		{
-			uint64_t cofvid = 0;
-			uint64_t cpuFreq = 0;
-			uint64_t cpuMult;
-			uint64_t divisor;
-			uint64_t did;
-			uint64_t fid;
+        {
+            uint64_t CpuDfsId;
+            uint64_t cpuDid;
+            uint64_t CpuFid;
+            uint64_t cpuMult;
+            int64_t cofvid = 0;
+            uint64_t cpuFreq = 0;
+            uint64_t divisor = 0;
             
-			cofvid  = rdmsr64(AMD_PSTATE0_STS);
-			did = bitfield(cofvid, 13, 8);
-			fid = bitfield(cofvid, 7, 0);
-			if (did == 0) divisor = 1;
-			else if (did == 1) divisor = 4;
-			else if (did == 2) divisor = 8;
-			else if (did == 3) divisor = 16;
-			else if (did == 4) divisor = 32;
+            cofvid  = rdmsr64(AMD_COFVID_STATUS);
             
-			cpuMult = ((fid + 10) * 2) / divisor;
-			cpuFreq = EFI_CPU_Frequency();
-			busFreq = (cpuFreq * 10) / cpuMult;
-			tscGranularity = cpuMult / 10;
-			break;
-		}
-	}
+            CpuDfsId = bitfield(cofvid, 8, 6);
+            CpuFid = bitfield(cofvid, 5, 0);
+            if (cpuDid == 0) divisor = 1;
+            else if (cpuDid == 1) divisor = 2;
+            else if (cpuDid == 2) divisor = 4;
+            else if (cpuDid == 3) divisor = 8;
+            else if (cpuDid == 4) divisor = 16;
+            
+            cpuMult = ((CpuFid + 0x10) * 10) / divisor;
+            cpuFreq = EFI_CPU_Frequency();
+            if (cofvid & (uint64_t)bit(0)) {
+                busFreq = (cpuFreq * 2)/((cpuMult*2)+1);
+            }
+            else{
+                busFreq = cpuFreq / cpuMult;
+            }
+            tscGranularity = cpuMult; /// 10;
+            
+            if (busFreq == 0) {
+                busFreq = 960000000ULL;
+                
+            }
+            
+            break;
+        }
+        case 23: /*** AMD Family 17h ***/
+        {
+            uint64_t CpuDfsId;
+            uint64_t CpuFid;
+            uint64_t cpuMult;
+            int64_t cofvid = 0;
+            uint64_t cpuFreq = 0;
+            uint64_t divisor;
+            
+            cofvid  = rdmsr64(AMD_PSTATE0_STS);
+            
+            CpuDfsId = bitfield(cofvid, 13, 8);
+            CpuFid = bitfield(cofvid, 7, 0);
+            cpuMult = (CpuFid * 10 / CpuDfsId) * 2;
+            cpuFreq = EFI_CPU_Frequency();
+            busFreq = (cpuFreq * 2)/((cpuMult*2)+1);
+            tscGranularity = cpuMult; /// 10;
+            
+            if (busFreq == 0) {
+                busFreq = 960000000ULL;
+                
+            }
+            
+            break;
+        }
+    }
 
 	if (busFreq != 0) {
 		busFCvtt2n = ((1 * Giga) << 32) / busFreq;
